@@ -11,27 +11,130 @@
 <body>
 
 <header>
-<h2 id="storyTitle">Loading...</h2>
+<h1 id="storyTitle">Loading...</h1>
 </header>
 
 <div class="controls">
-
-<button onclick="speakStory()">🔊 Play</button>
+<button onclick="speakStory()">🔊 Play Voice</button>
 <button onclick="stopSpeech()">⛔ Stop</button>
-
 </div>
 
 <div id="storyContent" class="storyBox"></div>
 
-<div class="navButtons">
+<script src="main.js"></script>
 
-<button onclick="prevPage()">⬅ Prev</button>
+<script>
+/* =========================
+LOAD STORY BY ID (FIX)
+========================= */
+
+let currentStory = null;
+let page = 0;
+
+document.addEventListener("DOMContentLoaded", () => {
+
+const params = new URLSearchParams(window.location.search);
+const id = parseInt(params.get("id"));
+
+if (!id) {
+document.getElementById("storyTitle").innerText = "Story Not Found";
+return;
+}
+
+currentStory = stories.find(s => s.id === id);
+
+if (!currentStory) {
+document.getElementById("storyTitle").innerText = "Story Not Found";
+return;
+}
+
+renderStory();
+});
+
+/* =========================
+RENDER STORY (FIXED)
+========================= */
+
+function renderStory() {
+
+const container = document.getElementById("storyContent");
+const title = document.getElementById("storyTitle");
+
+title.innerText = currentStory.title;
+
+container.innerHTML = "";
+
+/* PAGE 1 (ENGLISH) */
+if (page === 0) {
+
+currentStory.english.forEach((p, i) => {
+container.innerHTML += `<p>${p}</p>`;
+
+if (currentStory.thumb && i === 0) {
+container.innerHTML += `<img src="${currentStory.thumb}" class="storyImg">`;
+}
+});
+
+container.innerHTML += `
 <button onclick="nextPage()">Next ➜</button>
+`;
+}
 
-</div>
+/* PAGE 2 (ARABIC) */
+else {
 
-<script src="data.js"></script>
-<script src="story.js"></script>
+currentStory.english.forEach((p, i) => {
+
+container.innerHTML += `
+<p><b>${p}</b></p>
+<p style="color:#aaa">${currentStory.arabic[i] || ""}</p>
+`;
+
+if (currentStory.thumb && i === 0) {
+container.innerHTML += `<img src="${currentStory.thumb}" class="storyImg">`;
+}
+});
+
+container.innerHTML += `
+<button onclick="prevPage()">⬅ Back</button>
+`;
+}
+}
+
+/* =========================
+PAGE CONTROLS
+========================= */
+
+function nextPage(){
+page = 1;
+renderStory();
+}
+
+function prevPage(){
+page = 0;
+renderStory();
+}
+
+/* =========================
+VOICE FIX
+========================= */
+
+function speakStory(){
+
+let text = currentStory.english.join(" ");
+let speech = new SpeechSynthesisUtterance(text);
+
+speech.lang = "en-US";
+speech.rate = 0.85;
+
+window.speechSynthesis.cancel();
+window.speechSynthesis.speak(speech);
+}
+
+function stopSpeech(){
+window.speechSynthesis.cancel();
+}
+</script>
 
 </body>
 </html>
