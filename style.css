@@ -68,3 +68,17 @@ cursor:pointer;
 background:#00bcd4;
 color:black;
 }
+.storyImg{
+width:100%;
+border-radius:10px;
+margin:10px 0;
+}
+
+.storyBox{
+padding:20px;
+line-height:1.8;
+}
+
+.storyBox p{
+margin-bottom:10px;
+}
