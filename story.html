@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Story Reader</title>
+<title>Story</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -19,9 +19,90 @@
 <button onclick="stopSpeech()">⛔ Stop</button>
 </div>
 
-<div id="storyContent" class="storyBox"></div>
+<div id="storyContent"></div>
 
 <script src="main.js"></script>
+
+<script>
+/* =========================
+LOAD STORY (FIXED)
+========================= */
+
+let currentStory = null;
+let page = 1;
+
+function loadStory() {
+
+const params = new URLSearchParams(window.location.search);
+const id = Number(params.get("id"));
+
+currentStory = stories.find(s => s.id === id);
+
+if (!currentStory) {
+document.getElementById("storyContent").innerHTML =
+"<h2>Story not found</h2>";
+return;
+}
+
+document.getElementById("storyTitle").innerText = currentStory.title;
+
+renderPage();
+}
+
+function renderPage() {
+
+let html = "";
+
+if (page === 1) {
+
+html += "<h2>English Story</h2>";
+
+currentStory.english.forEach((p, i) => {
+html += `<p>${p}</p>`;
+});
+
+html += `<button onclick="page=2;renderPage()">Next ➜</button>`;
+}
+
+else {
+
+html += "<h2>English + Arabic</h2>";
+
+currentStory.english.forEach((p, i) => {
+html += `<p><b>${p}</b></p>`;
+html += `<p style="color:#aaa">${currentStory.arabic[i]}</p>`;
+});
+
+html += `<button onclick="page=1;renderPage()">⬅ Back</button>`;
+}
+
+document.getElementById("storyContent").innerHTML = html;
+}
+
+/* =========================
+VOICE FIX
+========================= */
+
+function speakStory() {
+if (!currentStory) return;
+
+const text = currentStory.english.join(" ");
+
+const msg = new SpeechSynthesisUtterance(text);
+msg.lang = "en-US";
+msg.rate = 0.85;
+
+speechSynthesis.cancel();
+speechSynthesis.speak(msg);
+}
+
+function stopSpeech() {
+speechSynthesis.cancel();
+}
+
+/* START */
+window.onload = loadStory;
+</script>
 
 </body>
 </html>
