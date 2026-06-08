@@ -47,49 +47,116 @@ images: [
 ];
 
 /* =========================
-RENDER STORIES LIST
+GET STORY FROM URL (FIX)
 ========================= */
 
-function renderStories(filter = "") {
+let currentStory = null;
+let page = 1;
 
-const container = document.getElementById("storyContainer");
+function loadStory() {
 
-container.innerHTML = "";
+const params = new URLSearchParams(window.location.search);
+const id = Number(params.get("id"));
 
-stories
-.filter(s =>
-s.title.toLowerCase().includes(filter.toLowerCase())
-)
-.forEach(story => {
+currentStory = stories.find(s => s.id === id);
 
-container.innerHTML += `
-<div class="card">
+if (!currentStory) {
+document.getElementById("storyContent").innerHTML =
+"<h2>Story not found</h2>";
+return;
+}
 
-<h3>${story.title}</h3>
+document.getElementById("storyTitle").innerText = currentStory.title;
 
-<img src="${story.images[0]}" style="width:100%;border-radius:10px;margin-top:10px;">
-
-<a href="story.html?id=${story.id}">
-📖 Read Story
-</a>
-
-</div>
-`;
-});
-
+renderPage();
 }
 
 /* =========================
-SEARCH
+RENDER PAGE SYSTEM
 ========================= */
 
-document.getElementById("searchInput")
-.addEventListener("input", (e) => {
-renderStories(e.target.value);
+function renderPage() {
+
+if (!currentStory) return;
+
+let content = "";
+
+if (page === 1) {
+
+content += `<h2>English Story</h2>`;
+
+currentStory.english.forEach((p, i) => {
+content += `<p>${p}</p>`;
+
+if (currentStory.images[i]) {
+content += `<img src="${currentStory.images[i]}" class="storyImg">`;
+}
 });
 
+content += `<button onclick="nextPage()">Next ➜</button>`;
+}
+
+else {
+
+content += `<h2>English + Arabic</h2>`;
+
+currentStory.english.forEach((p, i) => {
+content += `
+<p><b>${p}</b></p>
+<p style="color:#aaa">${currentStory.arabic[i]}</p>
+`;
+
+if (currentStory.images[i]) {
+content += `<img src="${currentStory.images[i]}" class="storyImg">`;
+}
+});
+
+content += `<button onclick="prevPage()">⬅ Back</button>`;
+}
+
+document.getElementById("storyContent").innerHTML = content;
+}
+
 /* =========================
-INIT
+PAGE CONTROL
 ========================= */
 
-renderStories();
+window.nextPage = function () {
+page = 2;
+renderPage();
+};
+
+window.prevPage = function () {
+page = 1;
+renderPage();
+};
+
+/* =========================
+VOICE FIX (IMPORTANT)
+========================= */
+
+window.speakStory = function () {
+
+if (!currentStory) return;
+
+let text = currentStory.english.join(" ");
+
+const speech = new SpeechSynthesisUtterance(text);
+
+speech.lang = "en-US";
+speech.rate = 0.85;
+speech.pitch = 1;
+
+window.speechSynthesis.cancel();
+window.speechSynthesis.speak(speech);
+};
+
+window.stopSpeech = function () {
+window.speechSynthesis.cancel();
+};
+
+/* =========================
+START
+========================= */
+
+window.onload = loadStory;
