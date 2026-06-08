@@ -82,3 +82,7 @@ line-height:1.8;
 .storyBox p{
 margin-bottom:10px;
 }
+.card img{
+height:180px;
+object-fit:cover;
+}
