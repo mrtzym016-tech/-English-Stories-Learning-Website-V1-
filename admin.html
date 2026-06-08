@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Story Admin</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+<h1>Story Admin Panel</h1>
+<p>Add New Stories</p>
+</header>
+
+<div class="adminBox">
+
+<input id="storyTitle" placeholder="Story Title">
+
+<select id="storyLevel">
+<option>A1</option>
+<option>A2</option>
+<option>B1</option>
+<option>B2</option>
+<option>C1</option>
+</select>
+
+<input id="storyThumb" placeholder="Thumbnail URL">
+
+<select id="storyVoice">
+<option value="female">Female Voice</option>
+<option value="male">Male Voice</option>
+</select>
+
+<div id="pagesContainer"></div>
+
+<button onclick="addPage()">
++ Add Page
+</button>
+
+<button onclick="saveStory()">
+💾 Save Story
+</button>
+
+</div>
+
+<script src="data.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>
