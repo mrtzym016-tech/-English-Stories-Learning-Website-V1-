@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read Story</title>
+<title>Story Reader</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,19 +15,11 @@
 </header>
 
 <div class="controls">
-<button onclick="speakStory()">🔊 Play Audio</button>
+<button onclick="speakStory()">🔊 Play Voice</button>
 <button onclick="stopSpeech()">⛔ Stop</button>
 </div>
 
-<div class="storyBox">
-
-<h2>English</h2>
-<p id="englishText"></p>
-
-<h2>Arabic Translation</h2>
-<p id="arabicText"></p>
-
-</div>
+<div id="storyContent" class="storyBox"></div>
 
 <script src="main.js"></script>
 </body>
