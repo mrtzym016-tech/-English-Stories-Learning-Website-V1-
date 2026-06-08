@@ -1,5 +1,5 @@
 /* =========================
-STORIES (LONG + IMAGES)
+STORIES DATA
 ========================= */
 
 const stories = [
@@ -47,113 +47,49 @@ images: [
 ];
 
 /* =========================
-PAGE SYSTEM
+RENDER STORIES LIST
 ========================= */
 
-let currentStory = null;
-let page = 1;
+function renderStories(filter = "") {
 
-/* =========================
-LOAD STORY
-========================= */
+const container = document.getElementById("storyContainer");
 
-if (document.getElementById("storyTitle")) {
+container.innerHTML = "";
 
-const urlParams = new URLSearchParams(window.location.search);
-const id = parseInt(urlParams.get("id"));
+stories
+.filter(s =>
+s.title.toLowerCase().includes(filter.toLowerCase())
+)
+.forEach(story => {
 
-currentStory = stories.find(s => s.id === id);
+container.innerHTML += `
+<div class="card">
 
-renderPage();
+<h3>${story.title}</h3>
 
-/* NEXT PAGE */
-window.nextPage = function () {
-page = 2;
-renderPage();
-};
+<img src="${story.images[0]}" style="width:100%;border-radius:10px;margin-top:10px;">
 
-/* BACK PAGE */
-window.prevPage = function () {
-page = 1;
-renderPage();
-};
-}
+<a href="story.html?id=${story.id}">
+📖 Read Story
+</a>
 
-/* =========================
-RENDER PAGE
-========================= */
-
-function renderPage() {
-
-if (!currentStory) return;
-
-document.getElementById("storyTitle").innerText =
-currentStory.title;
-
-let content = "";
-
-if (page === 1) {
-
-content += `<h2>English Story</h2>`;
-
-currentStory.english.forEach((p, i) => {
-content += `<p>${p}</p>`;
-
-if (currentStory.images[i]) {
-content += `<img src="${currentStory.images[i]}" class="storyImg">`;
-}
-});
-
-content += `<button onclick="nextPage()">Next ➜</button>`;
-}
-
-else if (page === 2) {
-
-content += `<h2>English + Arabic</h2>`;
-
-currentStory.english.forEach((p, i) => {
-content += `
-<p><b>${p}</b></p>
-<p style="color:#aaa">${currentStory.arabic[i]}</p>
+</div>
 `;
-
-if (currentStory.images[i]) {
-content += `<img src="${currentStory.images[i]}" class="storyImg">`;
-}
 });
 
-content += `<button onclick="prevPage()">⬅ Back</button>`;
-}
-
-document.getElementById("storyContent").innerHTML = content;
 }
 
 /* =========================
-IMPROVED SPEECH
+SEARCH
 ========================= */
 
-window.speakStory = function () {
+document.getElementById("searchInput")
+.addEventListener("input", (e) => {
+renderStories(e.target.value);
+});
 
-if (!currentStory) return;
+/* =========================
+INIT
+========================= */
 
-let text = currentStory.english.join(" ");
-
-const speech = new SpeechSynthesisUtterance(text);
-
-speech.lang = "en-US";
-speech.rate = 0.85;
-speech.pitch = 1;
-
-// اختيار صوت أفضل إذا موجود
-let voices = window.speechSynthesis.getVoices();
-let enVoice = voices.find(v => v.lang.includes("en"));
-
-if (enVoice) speech.voice = enVoice;
-
-window.speechSynthesis.cancel();
-window.speechSynthesis.speak(speech);
-};
-
-window.stopSpeech = function () {
-window.speechSynthesis.cancel();
-};
+renderStories();
