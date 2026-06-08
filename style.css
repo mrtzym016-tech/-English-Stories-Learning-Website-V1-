@@ -57,3 +57,18 @@ object-fit:cover;
 border-radius:10px;
 margin-bottom:10px;
 }
+
+/* =========================
+FIX STORY IMAGE ISSUE
+========================= */
+
+.storyImg{
+width:100%;
+max-width:520px;
+height:260px;
+object-fit:cover;
+border-radius:14px;
+margin:15px auto;
+display:block;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
